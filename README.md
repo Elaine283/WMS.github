@@ -1,909 +1,653 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>專題報告 — 智慧倉儲管理系統 WMS | Elaine</title>
-<meta name="description" content="智慧倉儲管理系統專題報告 — 完整產品簡報"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WMS 與庫存最佳化｜日系零售選物蜜桃櫻花焦糖色系</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['$$','$$']] },
+      chtml: { matchFontHeight: false },
+      startup: { typeset: false }
+    };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #fffaf4;
+      --bg-soft: #fff5ec;
+      --paper: rgba(255, 255, 255, .76);
+      --paper-strong: rgba(255, 255, 255, .92);
+      --peach-50: #fff0e7;
+      --peach-100: #ffe0cf;
+      --peach-300: #ffc7ad;
+      --peach-500: #ff9f7d;
+      --sakura-50: #fff1f6;
+      --sakura-100: #ffdce9;
+      --sakura-300: #ffb7cf;
+      --caramel-50: #fbf1df;
+      --caramel-100: #f1dec0;
+      --caramel-300: #d7ad79;
+      --caramel-500: #a9784d;
+      --tea: #7f6453;
+      --ink: #3d332d;
+      --muted: #8e7d72;
+      --line: rgba(201, 149, 111, .24);
+      --shadow: 0 18px 48px rgba(156, 103, 69, .12);
+      --shadow-soft: 0 10px 28px rgba(255, 159, 125, .12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --chart-1: #ff9f7d;
+      --chart-2: #ffb7cf;
+      --chart-3: #d7ad79;
+      --chart-4: #f1dec0;
+      --chart-5: #b98b6d;
+      --chart-6: #f8c7a7;
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Microsoft JhengHei", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(255, 183, 207, .30), transparent 30%),
+        radial-gradient(circle at 92% 10%, rgba(255, 199, 173, .34), transparent 33%),
+        radial-gradient(circle at 50% 98%, rgba(215, 173, 121, .18), transparent 42%),
+        linear-gradient(135deg, #fffaf4 0%, #fff3eb 47%, #fff7f8 100%);
+      overflow-x: hidden;
+    }
 
-<style>
-/* ═══════════════════════════════════════════
-      ELAINE PROJECT REPORT — STYLE SYSTEM (Dark Minimal Pro)
-   ═══════════════════════════════════════════ */
-:root {
-  --bg-base:      #0A0A0C;
-  --bg-1:         #111114;
-  --bg-2:         #18181C;
-  --bg-3:         #212126;
-  --bg-4:         #2C2C33;
-  --border:       rgba(255,255,255,0.07);
-  --border-soft:  rgba(255,255,255,0.04);
-  --border-hover: rgba(255,255,255,0.14);
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(169, 120, 77, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(169, 120, 77, .04) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, black, transparent 82%);
+      z-index: -1;
+    }
 
-  --text-1: #F2F2F5;
-  --text-2: #A8A8B8;
-  --text-3: #6A6A7A;
-  --text-4: #3A3A4A;
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 250, 244, .78);
+      backdrop-filter: blur(22px) saturate(130%);
+    }
 
-  --accent:       #7C6AF5;
-  --accent-dim:   rgba(124,106,245,0.15);
-  --accent-glow:  rgba(124,106,245,0.35);
-  --gold:         #C9A84C;
-  --gold-dim:     rgba(201,168,76,0.12);
-  --teal:         #3ECFCF;
-  --teal-dim:     rgba(62,207,207,0.12);
-  --danger:       #F05A7A;
-  --danger-dim:   rgba(240,90,122,0.12);
-  --success:      #4ECDC4;
-  --warning:      #FFD166;
+    .topbar-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
 
-  --sidebar-w:    260px;
-  --topbar-h:     60px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 250px;
+    }
 
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 18px;
-  --r-xl: 24px;
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--peach-500), var(--sakura-300) 55%, var(--caramel-300));
+      box-shadow: 0 10px 24px rgba(255, 159, 125, .28);
+      position: relative;
+    }
 
-  --shadow-sm:  0 2px 8px rgba(0,0,0,0.4);
-  --shadow-md:  0 6px 24px rgba(0,0,0,0.5);
-  --shadow-lg:  0 16px 48px rgba(0,0,0,0.6);
-  --shadow-accent: 0 0 40px rgba(124,106,245,0.2);
-}
+    .brand-mark::after {
+      content: "倉";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { font-size:16px; scroll-behavior:smooth; }
-body {
-  font-family: 'Instrument Sans', "PingFang TC", "Microsoft JhengHei", sans-serif;
-  background: var(--bg-base);
-  color: var(--text-1);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.6;
-}
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-::selection { background: var(--accent-dim); color: var(--text-1); }
+    .brand-title { font-weight: 900; letter-spacing: .02em; line-height: 1.1; }
+    .brand-title small { display: block; margin-top: 4px; color: var(--muted); font-weight: 600; font-size: 12px; }
+    .breadcrumb { color: var(--muted); font-size: 14px; text-align: center; }
+    .breadcrumb b { color: var(--peach-500); }
+    .status { display: flex; align-items: center; gap: 10px; justify-content: flex-end; min-width: 220px; }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, .58);
+      color: var(--tea);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 99px; display: inline-block; margin-right: 6px; background: var(--peach-500); box-shadow: 0 0 0 7px rgba(255, 159, 125, .14); animation: pulse 1.8s ease-in-out infinite; }
 
-.app-shell {
-  display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr;
-  grid-template-rows: auto;
-  min-height: 100vh;
-}
+    .shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 292px minmax(0, 1fr);
+      gap: 26px;
+      padding: 28px 26px 54px;
+    }
 
-/* ─── SIDEBAR ────────────────────────────── */
-.sidebar {
-  position: fixed;
-  left: 0; top: 0; bottom: 0;
-  width: var(--sidebar-w);
-  background: var(--bg-1);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-  overflow: hidden;
-}
-.sidebar::before {
-  content: '';
-  position: absolute;
-  top: -80px; left: -80px;
-  width: 220px; height: 220px;
-  background: radial-gradient(circle, rgba(124,106,245,0.08), transparent 70%);
-  pointer-events: none;
-}
-.sidebar-logo {
-  padding: 24px 24px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--border-soft);
-}
-.logo-mark {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--accent), #5B8FF9);
-  border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800; font-size: .85rem;
-  color: white;
-  flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(124,106,245,0.4);
-}
-.logo-text {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700; font-size: .95rem;
-  color: var(--text-1);
-  letter-spacing: -.01em;
-  line-height: 1.2;
-}
-.logo-sub {
-  font-size: .65rem;
-  color: var(--text-3);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.sidebar-section-label {
-  padding: 20px 20px 6px;
-  font-size: .65rem;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text-4);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 10px 20px;
-  margin: 1px 10px;
-  border-radius: var(--r-md);
-  cursor: pointer;
-  transition: all .2s cubic-bezier(.4,0,.2,1);
-  text-decoration: none;
-  color: var(--text-2);
-  font-size: .875rem;
-  font-weight: 500;
-  position: relative;
-  white-space: nowrap;
-}
-.nav-item:hover { background: var(--bg-2); color: var(--text-1); }
-.nav-item.active {
-  background: var(--accent-dim);
-  color: var(--accent);
-  border: 1px solid rgba(124,106,245,0.2);
-}
-.nav-item.active::before {
-  content: ''; position: absolute; left: -10px; top: 50%;
-  transform: translateY(-50%); width: 3px; height: 18px;
-  background: var(--accent); border-radius: 2px;
-}
-.nav-icon { width: 16px; height: 16px; opacity: .7; flex-shrink: 0; }
-.nav-item.active .nav-icon { opacity: 1; }
-.nav-badge {
-  margin-left: auto; background: var(--accent-dim); color: var(--accent);
-  font-size: .62rem; font-family: 'JetBrains Mono', monospace;
-  padding: 2px 7px; border-radius: 50px; border: 1px solid rgba(124,106,245,0.2);
-}
-.sidebar-progress { margin: auto 0 0; padding: 16px 20px 24px; border-top: 1px solid var(--border-soft); }
-.sidebar-progress-label { display: flex; justify-content: space-between; font-size: .72rem; color: var(--text-3); margin-bottom: 8px; }
-.progress-track { height: 3px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #5B8FF9); border-radius: 2px; transition: width 1.5s cubic-bezier(.4,0,.2,1); width: 0; }
+    .sidebar { position: sticky; top: 92px; align-self: start; }
+    .nav-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, .58);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-soft);
+      padding: 18px;
+      overflow: hidden;
+    }
+    .nav-eyebrow { color: var(--caramel-500); font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; margin: 8px 10px 12px; }
+    .nav-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .nav-link {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      padding: 12px 12px;
+      color: var(--tea);
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .nav-link:hover { transform: translateX(4px); background: rgba(255, 240, 231, .72); border-color: var(--line); }
+    .nav-link.active {
+      color: var(--ink);
+      background: linear-gradient(135deg, rgba(255, 224, 207, .88), rgba(255, 220, 233, .72));
+      border-color: rgba(255, 159, 125, .30);
+      box-shadow: 0 10px 22px rgba(255, 159, 125, .16);
+    }
+    .nav-num {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .62);
+      color: var(--peach-500);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .nav-title { font-weight: 850; font-size: 14px; }
+    .nav-note { font-size: 11px; color: var(--muted); }
+    .progress { margin: 18px 10px 4px; padding-top: 16px; border-top: 1px dashed var(--line); }
+    .progress-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .progress-track { height: 8px; border-radius: 99px; background: var(--peach-50); overflow: hidden; }
+    .progress-fill { height: 100%; width: 11.11%; border-radius: inherit; background: linear-gradient(90deg, var(--peach-500), var(--sakura-300), var(--caramel-300)); transition: width .45s cubic-bezier(.2,.8,.2,1); }
 
-/* ─── MAIN AREA ──────────────────────────── */
-.main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
-.topbar {
-  height: var(--topbar-h); background: rgba(10,10,12,0.85); backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 16px; position: sticky; top: 0; z-index: 90;
-}
-.topbar-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--text-3); }
-.topbar-breadcrumb span { color: var(--text-2); }
-.topbar-divider { color: var(--text-4); }
-#breadcrumb-current { color: var(--accent); font-weight: 600; }
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-.topbar-tag { padding: 4px 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 50px; font-size: .72rem; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
-.topbar-tag.live { background: rgba(62,207,207,0.08); border-color: rgba(62,207,207,0.2); color: var(--teal); display: flex; align-items: center; gap: 5px; }
-.live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); position: relative; }
-.live-dot::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 1px solid var(--teal); animation: pulse 2s ease-out infinite; }
-@keyframes pulse { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(2); opacity: 0; } }
-.topbar-hamburger { display: none; background: none; border: none; cursor: pointer; color: var(--text-2); padding: 4px; }
+    main { min-width: 0; }
+    .page { display: none; animation: pageIn .55s cubic-bezier(.2,.8,.2,1) both; }
+    .page.active { display: block; }
 
-.page-content { padding: 40px 32px; flex: 1; }
-.section { display: none; }
-.section.active { display: block; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 390px;
+      border: 1px solid rgba(255, 159, 125, .26);
+      border-radius: 34px;
+      padding: clamp(28px, 5vw, 58px);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,245,236,.66)),
+        radial-gradient(circle at 86% 22%, rgba(255,183,207,.42), transparent 32%),
+        radial-gradient(circle at 72% 80%, rgba(215,173,121,.20), transparent 36%);
+      box-shadow: var(--shadow);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      right: -180px;
+      top: -190px;
+      border-radius: 999px;
+      background: conic-gradient(from 120deg, rgba(255,159,125,.14), rgba(255,183,207,.18), rgba(241,222,192,.18), rgba(255,159,125,.14));
+      filter: blur(2px);
+      animation: slowSpin 18s linear infinite;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 860px; }
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--peach-500);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .label::before { content: ""; width: 30px; height: 2px; border-radius: 999px; background: currentColor; }
+    h1, h2, h3 { margin: 0; letter-spacing: -.03em; }
+    h1 { font-size: clamp(42px, 7vw, 82px); line-height: .98; font-weight: 950; color: var(--ink); }
+    .gradient-text { background: linear-gradient(135deg, var(--peach-500), var(--sakura-300) 45%, var(--caramel-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { color: var(--muted); font-size: 17px; line-height: 1.95; max-width: 760px; margin: 22px 0 0; }
 
-/* ─── COMPONENTS ─────────────────────────── */
-.page-header { margin-bottom: 36px; }
-.page-header-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--accent); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-.page-header-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); }
-.page-title { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; color: var(--text-1); letter-spacing: -.03em; line-height: 1.1; margin-bottom: 12px; }
-.page-desc { font-size: .92rem; color: var(--text-2); max-width: 600px; line-height: 1.75; }
+    .meta-grid, .kpi-grid, .feature-grid, .case-grid, .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .meta-grid { margin-top: 30px; }
+    .mini-card, .kpi-card, .card, .chart-card, .formula-card, .case-card, .timeline-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--paper);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-soft);
+    }
+    .mini-card { padding: 16px; }
+    .mini-label, .kpi-label { color: var(--muted); font-size: 12px; font-weight: 800; margin-bottom: 7px; }
+    .mini-value { color: var(--ink); font-size: 15px; font-weight: 900; }
+    .kpi-grid { margin: 22px 0; }
+    .kpi-card { padding: 22px; position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
+    .kpi-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .kpi-value { font-size: 34px; font-weight: 950; color: var(--ink); }
+    .kpi-delta { color: var(--peach-500); font-size: 13px; font-weight: 900; margin-top: 8px; }
 
-.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-.grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    .card, .chart-card { padding: clamp(22px, 3vw, 34px); margin-top: 22px; }
+    .card-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 22px; }
+    .card-title { font-size: clamp(26px, 3.2vw, 42px); font-weight: 950; }
+    .card-subtitle { color: var(--muted); line-height: 1.8; margin-top: 10px; max-width: 850px; }
+    .tag { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; color: var(--tea); background: rgba(255,255,255,.54); font-size: 12px; font-weight: 850; white-space: nowrap; }
+    .chart-wrap { position: relative; width: 100%; height: 356px; }
+    canvas { max-width: 100%; }
 
-.card { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px; transition: border-color .25s, transform .25s, box-shadow .25s; }
-.card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-md); }
-.card-glass { background: rgba(24,24,28,0.7); backdrop-filter: blur(20px); }
-.card-accent { border-color: rgba(124,106,245,0.25); background: linear-gradient(145deg, rgba(124,106,245,0.06), var(--bg-1)); }
+    .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 18px; }
+    .feature { padding: 20px; border-radius: 18px; background: rgba(255, 255, 255, .56); border: 1px solid var(--line); }
+    .feature b { display: block; margin-bottom: 8px; color: var(--ink); }
+    .feature p { margin: 0; color: var(--muted); line-height: 1.75; }
 
-.hero-card { background: linear-gradient(135deg, rgba(124,106,245,.12), rgba(91,143,249,.06)); border: 1px solid rgba(124,106,245,.2); border-radius: var(--r-xl); padding: 36px 40px; position: relative; overflow: hidden; margin-bottom: 28px; }
-.hero-card::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(124,106,245,.12), transparent 70%); pointer-events: none; }
-.hero-card::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(91,143,249,.08), transparent 70%); pointer-events: none; }
-.hero-title { font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 3vw, 2.4rem); font-weight: 800; color: var(--text-1); letter-spacing: -.03em; line-height: 1.1; margin-bottom: 12px; }
-.hero-title em { font-style: normal; background: linear-gradient(135deg, var(--accent), #5B8FF9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.hero-desc { font-size: .92rem; color: var(--text-2); line-height: 1.75; max-width: 540px; margin-bottom: 24px; }
-.hero-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.hero-stat { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--text-3); }
-.hero-stat strong { color: var(--text-1); font-weight: 600; }
+    .formula-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .formula-card { padding: 24px; background: linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,240,231,.54)); }
+    .formula-card h3 { color: var(--tea); font-size: 22px; margin-bottom: 14px; }
+    .formula-box {
+      margin: 16px 0;
+      padding: 18px;
+      border-left: 5px solid var(--peach-500);
+      border-radius: 16px;
+      background: rgba(255, 245, 236, .72);
+      overflow-x: auto;
+    }
+    .formula-meaning { color: var(--muted); line-height: 1.85; }
+    .inputs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .inputs label { display: block; color: var(--tea); font-size: 12px; font-weight: 900; margin-bottom: 7px; }
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 12px 13px;
+      background: rgba(255,255,255,.78);
+      color: var(--ink);
+      font: inherit;
+      outline: none;
+    }
+    input:focus { border-color: rgba(255, 159, 125, .65); box-shadow: 0 0 0 4px rgba(255,159,125,.12); }
+    .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, var(--peach-500), var(--sakura-300));
+      font-weight: 900;
+      box-shadow: 0 12px 24px rgba(255,159,125,.24);
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(255,159,125,.32); }
+    .result {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      color: var(--ink);
+      background: linear-gradient(135deg, rgba(255,224,207,.76), rgba(255,220,233,.60));
+      border: 1px solid rgba(255,159,125,.24);
+      font-weight: 900;
+      display: none;
+    }
 
-/* 💡 核心對接面板：院二流三甲 + 流通科技管理資訊欄 */
-.hero-info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  background: var(--bg-base);
-  padding: 16px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  margin-bottom: 20px;
-}
-.hero-info-item { display: flex; flex-direction: column; }
-.hero-info-item .label { font-size: .68rem; font-family: 'JetBrains Mono', monospace; color: var(--text-3); text-transform: uppercase; margin-bottom: 4px; font-weight: bold; }
-.hero-info-item .value { font-size: .88rem; color: var(--text-1); font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 18px; background: rgba(255,255,255,.54); }
+    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: linear-gradient(135deg, var(--peach-50), var(--sakura-50)); color: var(--tea); font-weight: 950; }
+    td { color: var(--muted); line-height: 1.7; }
+    tr:last-child td { border-bottom: 0; }
 
-.kpi-card { padding: 20px 22px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; }
-.kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; }
-.kpi-card.k-accent::after { background: linear-gradient(90deg, var(--accent), transparent); }
-.kpi-card.k-gold::after   { background: linear-gradient(90deg, var(--gold), transparent); }
-.kpi-card.k-teal::after   { background: linear-gradient(90deg, var(--teal), transparent); }
-.kpi-card.k-danger::after { background: linear-gradient(90deg, var(--danger), transparent); }
+    .case-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 18px; }
+    .case-card { padding: 22px; background: rgba(255,255,255,.62); }
+    .case-card h3 { font-size: 20px; margin-bottom: 10px; }
+    .case-card p { color: var(--muted); line-height: 1.8; margin: 0; }
 
-.kpi-value { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; letter-spacing: -.04em; color: var(--text-1); line-height: 1; }
-.kpi-value.v-accent { color: var(--accent); }
-.kpi-value.v-gold   { color: var(--gold); }
-.kpi-value.v-teal   { color: var(--teal); }
-.kpi-value.v-danger { color: var(--danger); }
+    .timeline { display: grid; gap: 14px; margin-top: 18px; }
+    .timeline-card { display: grid; grid-template-columns: 120px 1fr auto; gap: 18px; padding: 18px; align-items: center; }
+    .phase { color: var(--peach-500); font-weight: 950; }
+    .timeline-card p { margin: 6px 0 0; color: var(--muted); line-height: 1.65; }
 
-.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-.data-table th { padding: 8px 12px; text-align: left; font-size: .65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-3); letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-.data-table td { padding: 12px 12px; font-size: .82rem; color: var(--text-2); border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
-.data-table tr:last-child td { border-bottom: none; }
-.data-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+    .footer-note { margin-top: 28px; color: var(--muted); font-size: 13px; line-height: 1.8; text-align: center; }
 
-.timeline-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border-soft); position: relative; }
-.timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; position: relative; }
-.timeline-dot::before { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 1px; height: calc(100% + 16px); background: var(--border); }
-.timeline-item:last-child .timeline-dot::before { display: none; }
+    @keyframes pulse { 0%,100%{ transform: scale(1); opacity: 1; } 50%{ transform: scale(.75); opacity: .68; } }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slowSpin { to { transform: rotate(360deg); } }
 
-.formula-box { background: var(--bg-base); padding: 18px; border-radius: var(--r-md); border: 1px dashed var(--border-hover); margin: 15px 0; text-align: center; }
-.chart-wrap { position: relative; height: 230px; width: 100%; }
-.icon-box { width: 40px; height: 40px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-.chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 50px; font-size: .75rem; color: var(--text-2); margin-right: 4px; margin-bottom: 6px; }
-
-.risk-bar { display: flex; flex-direction: column; gap: 10px; }
-.risk-row { display: flex; align-items: center; gap: 10px; }
-.risk-label { font-size: .8rem; color: var(--text-2); min-width: 120px; }
-.risk-track { flex: 1; height: 5px; background: var(--bg-3); border-radius: 3px; overflow: hidden; }
-.risk-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.4,0,.2,1); width: 0; }
-.risk-pct { font-size: .72rem; font-family: 'JetBrains Mono', monospace; color: var(--text-3); min-width: 32px; text-align: right; }
-
-.gantt { display: flex; flex-direction: column; gap: 10px; }
-.gantt-row { display: flex; align-items: center; gap: 12px; }
-.gantt-label { font-size: .78rem; color: var(--text-2); width: 120px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.gantt-track { flex: 1; height: 20px; background: var(--bg-3); border-radius: 4px; position: relative; overflow: hidden; }
-.gantt-fill { position: absolute; top: 0; height: 100%; border-radius: 4px; transition: width 1.4s cubic-bezier(.4,0,.2,1), left .8s; width: 0; }
-.gantt-fill-done { background: linear-gradient(90deg, var(--accent), rgba(124,106,245,.6)); }
-.gantt-fill-wip  { background: linear-gradient(90deg, var(--gold), rgba(201,168,76,.6)); }
-.gantt-fill-todo { background: linear-gradient(90deg, var(--bg-4), var(--bg-3)); }
-
-/* ─── RESPONSIVE ─────────────────────────── */
-@media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 900px) {
-  :root { --sidebar-w: 0px; }
-  .sidebar { transform: translateX(-260px); --sidebar-w: 260px; }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .topbar-hamburger { display: flex; align-items: center; }
-  .grid-3 { grid-template-columns: repeat(2,1fr); }
-  .grid-2 { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) { .page-content { padding: 24px 16px; } .grid-3, .grid-4 { grid-template-columns: 1fr; } }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); z-index: 99; }
-.sidebar-overlay.active { display: block; }
-</style>
+    @media (max-width: 1120px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .nav-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .meta-grid, .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .topbar-inner { flex-direction: column; align-items: stretch; }
+      .brand, .status { min-width: 0; justify-content: center; }
+      .shell { padding: 18px 14px 40px; }
+      .nav-list, .meta-grid, .kpi-grid, .feature-grid, .formula-grid, .case-grid, .inputs { grid-template-columns: 1fr; }
+      .card-head, .timeline-card { display: block; }
+      .chart-wrap { height: 300px; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="sidebar-overlay" id="overlay"></div>
-
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">EL</div>
-    <div>
-      <div class="logo-text">WMS Report</div>
-      <div class="logo-sub">專題報告 · 2026</div>
-    </div>
-  </div>
-
-  <div class="sidebar-section-label">簡報內容</div>
-  <a class="nav-item active" data-section="s-overview"><span class="nav-text">執行摘要</span></a>
-  <a class="nav-item" data-section="s-problem"><span class="nav-text">問題定義</span></a>
-  <a class="nav-item" data-section="s-solution"><span class="nav-text">解決方案</span></a>
-  <a class="nav-item" data-section="s-market"><span class="nav-text">市場分析</span><span class="nav-badge">NEW</span></a>
-  <a class="nav-item" data-section="s-product"><span class="nav-text">產品功能</span></a>
-  <a class="nav-item" data-section="s-finance"><span class="nav-text">財務規劃</span></a>
-  <a class="nav-item" data-section="s-risk"><span class="nav-text">風險評估</span></a>
-  <a class="nav-item" data-section="s-roadmap"><span class="nav-text">執行藍圖</span></a>
-  <a class="nav-item" data-section="s-team"><span class="nav-text">團隊介紹</span></a>
-
-  <div class="sidebar-progress">
-    <div class="sidebar-progress-label">
-      <span>專案完成度</span>
-      <span style="font-family:'JetBrains Mono',monospace;color:#7C6AF5">100%</span>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" data-w="100"></div>
-    </div>
-    <div style="margin-top:10px;font-size:.65rem;color:var(--text-3);font-family:'JetBrains Mono',monospace">
-      更新時間: 2026-05-31
-    </div>
-  </div>
-</aside>
-
-<div class="main" id="mainArea">
-
   <header class="topbar">
-    <button class="topbar-hamburger" id="hamburger" aria-label="選單">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <line x1="2" y1="4.5" x2="16" y2="4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="2" y1="9"   x2="16" y2="9"   stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="2" y1="13.5" x2="16" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </button>
-    <div class="topbar-breadcrumb">
-      <span>WMS Report</span>
-      <span class="topbar-divider">/</span>
-      <span id="breadcrumb-current">執行摘要</span>
-    </div>
-    <div class="topbar-right">
-      <div class="topbar-tag">v2.4.1</div>
-      <div class="topbar-tag live"><span class="live-dot"></span>LIVE</div>
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-title">WMS Selection Retail Lab<small>流通科技管理｜日系零售選物專題</small></div>
+      </div>
+      <div class="breadcrumb">九大頁面控制點 / <b id="currentPage">執行摘要</b></div>
+      <div class="status"><span class="pill"><span class="dot"></span>MathJax + Chart.js</span><span class="pill">Single HTML</span></div>
     </div>
   </header>
 
-  <div class="page-content">
+  <div class="shell">
+    <aside class="sidebar">
+      <nav class="nav-card" aria-label="WMS 九大頁面切換控制點">
+        <div class="nav-eyebrow">Page Control</div>
+        <ul class="nav-list" id="navList"></ul>
+        <div class="progress">
+          <div class="progress-meta"><span>閱讀進度</span><span id="progressText">1 / 9</span></div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+      </nav>
+    </aside>
 
-    <div class="section active" id="s-overview">
-      <div class="hero-card">
-        <div class="hero-title">
-          智慧倉儲管理系統<br/>
-          <em id="typing-text">WMS Platform</em>
-        </div>
-        <div class="hero-desc">
-          本次專題報告針對倉儲管理系統（WMS）進行完整的產品呈現。融合現代多通路（OMO）物流體系、自動化儲位分流演算法，打造出高精確度的科學庫存決策大屏。
-        </div>
-
-        <div class="hero-info-grid">
-          <div class="hero-info-item"><span class="label">作者</span><span class="value" id="heroAuthor">陳玉鳳、洪依辰</span></div>
-          <div class="hero-info-item"><span class="label">指導教授</span><span class="value" id="heroProfessor">褚文明 教授</span></div>
-          <div class="hero-info-item"><span class="label">系所</span><span class="value" id="heroDepartment">行銷與流通管理系所</span></div>
-          <div class="hero-info-item"><span class="label">班級</span><span class="value" id="heroClass">院二流三甲</span></div>
-          <div class="hero-info-item"><span class="label">科目</span><span class="value" id="heroSubject">流通科技管理</span></div>
-        </div>
-
-        <div class="hero-meta">
-          <div class="hero-stat"><span>報告日期</span>&nbsp;<strong>2026-05-31</strong></div>
-          <div class="hero-stat"><span>•</span></div>
-          <div class="hero-stat"><span>版本規格</span>&nbsp;<strong>Final v2.4</strong></div>
-          <div style="margin-left:auto;display:flex;gap:8px;">
-            <span class="badge badge-accent">🚀 完整 Present</span>
-            <span class="badge badge-teal">📊 含趨勢圖表</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-4">
-        <div class="card kpi-card k-accent">
-          <div class="kpi-label">目標市場規模</div>
-          <div class="kpi-value v-accent counter" data-target="28.6" data-dec="1" data-suffix="B">0</div>
-          <div class="kpi-delta up">▲ 18.4% YoY</div>
-        </div>
-        <div class="card kpi-card k-gold">
-          <div class="kpi-label">預計年營收</div>
-          <div class="kpi-value v-gold counter" data-target="3.6" data-dec="1" data-prefix="$" data-suffix="M">0</div>
-          <div class="kpi-delta up">▲ 34% 成長</div>
-        </div>
-        <div class="card kpi-card k-teal">
-          <div class="kpi-label">使用者規模</div>
-          <div class="kpi-value v-teal counter" data-target="7200" data-dec="0">0</div>
-          <div class="kpi-delta up">▲ 200% 成長</div>
-        </div>
-        <div class="card kpi-card k-danger">
-          <div class="kpi-label">市場佔有率</div>
-          <div class="kpi-value v-danger counter" data-target="38" data-dec="0" data-suffix="%">0</div>
-          <div class="kpi-delta flat">→ 目標 45%</div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">年度營收趨勢</div>
-              <div class="card-sub">實際 vs 目標（單位：百萬）</div>
+    <main>
+      <section id="overview" class="page active" data-title="執行摘要">
+        <div class="hero">
+          <div class="hero-content">
+            <div class="label">Executive Summary</div>
+            <h1>智慧倉儲管理系統<br><span class="gradient-text" id="typewriter">庫存最佳化</span></h1>
+            <p class="lead">本檔案將日系零售選物的柔和質感、蜜桃櫻花焦糖色系、庫存科學公式與 WMS 專題骨架整合為單一獨立網頁。專題以「流通科技管理」課程脈絡為核心，由褚文明教授指導，陳玉鳳、洪依辰同學發表，聚焦倉儲準確度、補貨決策與多通路履約效率。</p>
+            <div class="meta-grid">
+              <div class="mini-card"><div class="mini-label">指導教授</div><div class="mini-value">褚文明 教授</div></div>
+              <div class="mini-card"><div class="mini-label">專題成員</div><div class="mini-value">陳玉鳳、洪依辰</div></div>
+              <div class="mini-card"><div class="mini-label">課程定位</div><div class="mini-value">流通科技管理</div></div>
+              <div class="mini-card"><div class="mini-label">主題風格</div><div class="mini-value">蜜桃櫻花焦糖</div></div>
             </div>
-            <span class="badge badge-accent">2026</span>
           </div>
-          <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">市場佔有率分布</div>
-              <div class="card-sub">WMS 市場競爭態勢</div>
-            </div>
-            <span class="badge badge-gold">競爭分析</span>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">庫存準確率目標</div><div class="kpi-value">99.2%</div><div class="kpi-delta">以條碼、批號與即時盤點支援</div></div>
+          <div class="kpi-card"><div class="kpi-label">揀貨效率提升</div><div class="kpi-value">38%</div><div class="kpi-delta">依波次與儲位熱區重排</div></div>
+          <div class="kpi-card"><div class="kpi-label">缺貨率下降</div><div class="kpi-value">0.8%</div><div class="kpi-delta">導入安全庫存預警</div></div>
+          <div class="kpi-card"><div class="kpi-label">庫存週轉提升</div><div class="kpi-value">62%</div><div class="kpi-delta">搭配 ABC 分類與補貨節奏</div></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-head"><div><div class="label">Chart 01</div><h2 class="card-title">年度營收與目標趨勢</h2><p class="card-subtitle">以柔和亮色背景搭配漸層線條與延遲動畫，呈現 WMS 導入後的營收改善軌跡。</p></div><span class="tag">Line Animation</span></div>
+          <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-head"><div><div class="label">Chart 02</div><h2 class="card-title">市場佔有率分布</h2><p class="card-subtitle">使用環形圖呈現零售、製造、第三方物流與電商倉配的導入比例。</p></div><span class="tag">Doughnut Rotation</span></div>
+          <div class="chart-wrap"><canvas id="marketChart"></canvas></div>
+        </div>
+      </section>
+
+      <section id="problem" class="page" data-title="問題定義">
+        <div class="card"><div class="card-head"><div><div class="label">Problem Definition</div><h2 class="card-title">傳統倉儲的四個斷點</h2><p class="card-subtitle">WMS 專題的問題意識，來自傳統倉儲在資料即時性、揀貨效率、庫存風險與跨通路協同上的落差。</p></div><span class="tag">痛點梳理</span></div>
+          <div class="feature-grid">
+            <div class="feature"><b>庫存資料延遲</b><p>紙本或批次匯入造成帳實不符，難以及時反映入庫、出庫與退貨狀態。</p></div>
+            <div class="feature"><b>人工揀貨路徑冗長</b><p>缺乏波次與熱區儲位設計，使人員在倉內移動成本偏高。</p></div>
+            <div class="feature"><b>缺貨與滯銷並存</b><p>未建立 EOQ 與安全庫存模型，容易同時出現高庫存成本與服務水準不足。</p></div>
+            <div class="feature"><b>批號追溯困難</b><p>食品、零售與電商退貨需要批號、效期與來源追蹤，傳統管理難以快速回溯。</p></div>
+            <div class="feature"><b>多通路訂單衝突</b><p>門市、網購、平台訂單競爭同一庫存，若無共享庫存邏輯易造成超賣。</p></div>
+            <div class="feature"><b>管理決策不可視</b><p>缺少圖表化儀表板，主管不易判斷庫存週轉、缺貨風險與作業瓶頸。</p></div>
           </div>
-          <div class="chart-wrap"><canvas id="chartMarket"></canvas></div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="section" id="s-problem">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Problem Definition</div>
-        <h1 class="page-title">問題定義與現況痛點</h1>
-        <p class="page-desc">傳統倉儲與粗放的物流行為正產生龐大的隱性運營成本黑洞。</p>
-      </div>
+      <section id="solution" class="page" data-title="解決方案">
+        <div class="card"><div class="card-head"><div><div class="label">Solution Architecture</div><h2 class="card-title">WMS 核心解決方案骨架</h2><p class="card-subtitle">系統以「收貨、上架、儲位、補貨、揀貨、包裝、出貨、盤點、報表」作為主流程，並將庫存科學模型嵌入決策層。</p></div><span class="tag">核心骨架</span></div>
+          <table>
+            <thead><tr><th>模組</th><th>管理重點</th><th>科技應用</th></tr></thead>
+            <tbody>
+              <tr><td>入庫與驗收</td><td>採購到貨、條碼驗收、批號與效期登錄。</td><td>行動掃描、ASN 到貨通知、例外回報。</td></tr>
+              <tr><td>儲位與補貨</td><td>以商品週轉率、體積與溫層條件配置儲位。</td><td>ABC 分類、熱區儲位、補貨門檻。</td></tr>
+              <tr><td>揀貨與出貨</td><td>降低行走距離，提升訂單準時履約。</td><td>波次揀貨、路徑最佳化、出貨檢核。</td></tr>
+              <tr><td>庫存決策</td><td>控制持有成本、缺貨風險與訂購批量。</td><td>EOQ、安全庫存、需求波動監測。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="formula-grid">
+          <div class="formula-card"><h3>經濟訂購量 EOQ</h3><div class="formula-box">$$EOQ = Q^* = \sqrt{\frac{2DS}{H}}$$</div><p class="formula-meaning">其中 \(D\) 為年度需求量，\(S\) 為單次訂購成本，\(H\) 為單位年度持有成本。此模型用來平衡訂購成本與持有成本。</p></div>
+          <div class="formula-card"><h3>安全庫存模型</h3><div class="formula-box">$$SS = Z \times \sigma_L$$</div><p class="formula-meaning">其中 \(Z\) 為服務水準係數，\(\sigma_L\) 為前置時間內需求標準差。此模型用來吸收需求與交期波動，降低缺貨機率。</p></div>
+        </div>
+      </section>
 
-      <div class="grid-2">
-        <div class="card card-accent">
-          <div class="card-header"><div class="card-title">核心痛點軸線 Pain Points</div></div>
+      <section id="market" class="page" data-title="市場分析">
+        <div class="chart-card"><div class="card-head"><div><div class="label">Chart 03</div><h2 class="card-title">季度成長分析</h2><p class="card-subtitle">比較本年度與上年度季度表現，並以柔和柱狀動畫呈現導入 WMS 後的成長差距。</p></div><span class="tag">Bar Delay</span></div><div class="chart-wrap"><canvas id="quarterlyChart"></canvas></div></div>
+        <div class="card"><div class="card-head"><div><div class="label">Retail Insight</div><h2 class="card-title">零售選物場景中的 WMS 價值</h2><p class="card-subtitle">日系選物店、生活百貨與小型連鎖店常同時面對季節檔期、短生命週期商品與社群銷售波峰，因此需要更細緻的庫存視覺化與補貨節奏。</p></div><span class="tag">OMO</span></div></div>
+      </section>
+
+      <section id="product" class="page" data-title="產品功能">
+        <div class="chart-card"><div class="card-head"><div><div class="label">Chart 04</div><h2 class="card-title">功能成熟度與使用者成長</h2><p class="card-subtitle">以雙軸感的視覺語彙呈現功能模組逐步成熟後，使用者採納率的提升。</p></div><span class="tag">Area Fill</span></div><div class="chart-wrap"><canvas id="usersChart"></canvas></div></div>
+        <div class="feature-grid">
+          <div class="feature"><b>即時庫存儀表板</b><p>以 SKU、倉別、批號、可售量與保留量呈現完整庫存狀態。</p></div>
+          <div class="feature"><b>補貨預警</b><p>自動比較再訂購點與安全庫存，產生補貨建議清單。</p></div>
+          <div class="feature"><b>行動作業</b><p>收貨、上架、移倉、揀貨與盤點均能透過行動裝置完成。</p></div>
+        </div>
+      </section>
+
+      <section id="finance" class="page" data-title="財務規劃">
+        <div class="chart-card"><div class="card-head"><div><div class="label">Chart 05</div><h2 class="card-title">預算配置與成本分析</h2><p class="card-subtitle">將系統開發、硬體設備、教育訓練、維運與資料整合費用視覺化，支援投資決策。</p></div><span class="tag">Polar Area</span></div><div class="chart-wrap"><canvas id="budgetChart"></canvas></div></div>
+        <div class="card"><table><thead><tr><th>成本項目</th><th>投資目的</th><th>預期效益</th></tr></thead><tbody><tr><td>系統開發</td><td>建置 WMS 核心流程與報表。</td><td>降低人工紀錄與跨表整併成本。</td></tr><tr><td>掃描設備</td><td>支援條碼、批號與儲位掃描。</td><td>提升帳實一致性與追溯速度。</td></tr><tr><td>教育訓練</td><td>讓倉儲與門市人員掌握標準作業。</td><td>降低導入初期阻力與錯誤率。</td></tr></tbody></table></div>
+      </section>
+
+      <section id="risk" class="page" data-title="風險評估">
+        <div class="chart-card"><div class="card-head"><div><div class="label">Chart 06</div><h2 class="card-title">綜合風險雷達圖</h2><p class="card-subtitle">以雷達圖評估資料品質、導入成本、流程改造、使用者接受度、系統穩定與供應商依賴。</p></div><span class="tag">Radar Sweep</span></div><div class="chart-wrap"><canvas id="riskChart"></canvas></div></div>
+        <div class="feature-grid"><div class="feature"><b>資料風險</b><p>若品號、儲位或批號資料不完整，系統效益將明顯下降。</p></div><div class="feature"><b>流程風險</b><p>導入 WMS 前需重新定義收貨、上架與揀貨責任邊界。</p></div><div class="feature"><b>人員風險</b><p>需透過訓練與績效指標，降低對新流程的抗拒。</p></div></div>
+      </section>
+
+      <section id="roadmap" class="page" data-title="執行藍圖">
+        <div class="card"><div class="card-head"><div><div class="label">Roadmap</div><h2 class="card-title">18 個月產品迭代藍圖</h2><p class="card-subtitle">執行藍圖以「先可視、再自動、後最佳化」為原則，逐步建立能被現場採用的 WMS 系統。</p></div><span class="tag">三階段導入</span></div>
           <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background:var(--danger)"></div>
-              <div>
-                <div class="timeline-title">庫存數據嚴重滯後不準</div>
-                <div class="timeline-date">影響程度：High</div>
-                <div class="timeline-desc">人工 Excel 登帳造成資訊孤島，平均月帳物差異率達 8-12%，常態性導致多通路缺貨爆單。</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background:var(--warning)"></div>
-              <div>
-                <div class="timeline-title">揀貨動線重疊低效</div>
-                <div class="timeline-date">影響程度：High</div>
-                <div class="timeline-desc">未配置智慧路徑演算法，重複走動造成每單揀貨耗時 8.5 分鐘，大促期積壓率衝高。</div>
-              </div>
-            </div>
+            <div class="timeline-card"><div class="phase">0–3 個月</div><div><b>資料盤點與流程建模</b><p>建立商品、儲位、供應商與訂單資料字典，完成現行流程訪談。</p></div><span class="tag">Foundation</span></div>
+            <div class="timeline-card"><div class="phase">4–9 個月</div><div><b>核心 WMS 模組上線</b><p>完成入庫、上架、移倉、揀貨、出貨與盤點模組，導入行動掃描作業。</p></div><span class="tag">Go-Live</span></div>
+            <div class="timeline-card"><div class="phase">10–18 個月</div><div><b>庫存最佳化與決策儀表板</b><p>導入 EOQ、安全庫存、ABC 分類與管理視覺化，支援補貨策略調整。</p></div><span class="tag">Optimize</span></div>
           </div>
         </div>
+      </section>
 
-        <div class="card">
-          <div class="card-header"><div class="card-title">市場缺口與損失量化分析</div></div>
-          <div class="risk-bar">
-            <div class="risk-row">
-              <div class="risk-label">人力無效耗損</div>
-              <div class="risk-track"><div class="risk-fill" data-w="85" style="background:var(--danger)"></div></div>
-              <div class="risk-pct">85%</div>
-            </div>
-            <div class="risk-row">
-              <div class="risk-label">錯單衍生損失</div>
-              <div class="risk-track"><div class="risk-fill" data-w="48" style="background:var(--warning)"></div></div>
-              <div class="risk-pct">48%</div>
-            </div>
+      <section id="inventory" class="page" data-title="存貨管理">
+        <div class="card"><div class="card-head"><div><div class="label">Inventory Science</div><h2 class="card-title">庫存科學公式與動態引擎</h2><p class="card-subtitle">本頁將 EOQ 與安全庫存模型做成可調式計算器，輸入數值後會同步更新結果並重新觸發 MathJax 排版。</p></div><span class="tag">Dynamic MathJax</span></div>
+          <div class="formula-grid">
+            <div class="formula-card"><h3>EOQ 計算器</h3><div class="formula-box" id="eoqFormula">$$EOQ = \sqrt{\frac{2 \times 10000 \times 50}{5}} = 447.21$$</div><div class="inputs"><div><label>年度需求 D</label><input id="eoqD" type="number" value="10000"></div><div><label>訂購成本 S</label><input id="eoqS" type="number" value="50"></div><div><label>持有成本 H</label><input id="eoqH" type="number" value="5"></div></div><div class="button-row"><button class="btn" onclick="calculateEOQ()">重新計算 EOQ</button></div><div class="result" id="eoqResult"></div></div>
+            <div class="formula-card"><h3>安全庫存計算器</h3><div class="formula-box" id="ssFormula">$$SS = 1.65 \times 1131 = 1866.15$$</div><div class="inputs"><div><label>服務係數 Z</label><input id="ssZ" type="number" value="1.65" step="0.01"></div><div><label>需求標準差 σ</label><input id="ssSigma" type="number" value="800"></div><div><label>前置時間 L</label><input id="ssLead" type="number" value="2"></div></div><div class="button-row"><button class="btn" onclick="calculateSS()">重新計算安全庫存</button></div><div class="result" id="ssResult"></div></div>
           </div>
         </div>
-      </div>
-    </div>
+        <div class="case-grid">
+          <div class="case-card"><h3>電子製造業</h3><p>年度採購 120,000 件、訂購成本 500 元、持有成本 8 元時，EOQ 約為 3,873 件，可降低訂購與持有的總成本。</p></div>
+          <div class="case-card"><h3>零售連鎖店</h3><p>在服務水準 95% 下導入安全庫存，可將缺貨率由 5% 降至 0.8%，提升顧客滿意度與銷售穩定性。</p></div>
+          <div class="case-card"><h3>食品飲料業</h3><p>以 ABC 分類集中管理高價值 SKU，使庫存投資降低 28%，並釋放更多營運資金。</p></div>
+        </div>
+      </section>
 
-    <div class="section" id="s-solution">
-      <div class="page-header">
-        <div class="page-header-eyebrow">SaaS Architecture</div>
-        <h1 class="page-title">解決方案與科學控制模型</h1>
-      </div>
+      <p class="footer-note">© WMS 與庫存最佳化專題。單一檔案整合：CSS 主題、九大頁面切換、六大 Chart.js 圖表、LaTeX 公式與 MathJax 動態排版。</p>
+    </main>
+  </div>
 
-      <div class="card" style="margin-bottom:20px;">
-        <div class="card-header"><div class="card-title">三大倉儲系統管理模式矩陣表</div></div>
-        <table class="data-table">
-          <thead>
-            <tr><th>評估指標</th><th>傳統紙本 / Excel</th><th>一般 ERP 庫存模組</th><th>本專案智慧雲端 WMS</th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="td-main">多通路庫存同步</td><td>✗ 完全人工串接</td><td>△ 定期非即時同步</td><td><span class="badge badge-teal">✓ 秒級即時同步</span></td></tr>
-            <tr><td class="td-main">揀貨路徑規劃</td><td>✗ 無（憑員工經驗走動）</td><td>✗ 僅按儲位碼排序</td><td><span class="badge badge-teal">✓ AI 最佳路徑演算法</span></td></tr>
-            <tr><td class="td-main">盤點流暢度</td><td>✗ 必須停工大盤點</td><td>△ 批次非即時帳面盤</td><td><span class="badge badge-teal">✓ 動態即時不停工盤點</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+  <script>
+    const pages = [
+      ['overview', '執行摘要', '專題總覽'],
+      ['problem', '問題定義', '市場缺口'],
+      ['solution', '解決方案', 'WMS 骨架'],
+      ['market', '市場分析', '成長洞察'],
+      ['product', '產品功能', '模組能力'],
+      ['finance', '財務規劃', '預算配置'],
+      ['risk', '風險評估', '導入治理'],
+      ['roadmap', '執行藍圖', '18 個月'],
+      ['inventory', '存貨管理', 'EOQ / SS']
+    ];
 
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">1. 經濟訂購量模型 (EOQ)</div>
-          <div class="card-sub">精確抓出平衡「持有成本」與「訂購成本」的最優採購批量：</div>
-          <div class="formula-box">$$EOQ = \sqrt{\frac{2DS}{H}}$$</div>
-          <div style="font-size: .75rem; color: var(--text-3);">其中 $D$ 為年需求量、$S$ 為單次訂購成本、$H$ 為單位持有成本。</div>
-        </div>
-        <div class="card">
-          <div class="card-title">2. 安全庫存量公式 (Safety Stock)</div>
-          <div class="card-sub">抵禦供應鏈前置時間突發延遲與斷貨衝擊的量化防線：</div>
-          <div class="formula-box">$$SS = Z \times \sigma_L$$</div>
-          <div style="font-size: .75rem; color: var(--text-3);">其中 $Z$ 為服務水準係數、$\sigma_L$ 為前置時間內需求標準差。</div>
-        </div>
-      </div>
-    </div>
+    const chartInstances = {};
+    Chart.defaults.font.family = 'Noto Sans TC, Noto Sans JP, Microsoft JhengHei, sans-serif';
+    Chart.defaults.color = '#8e7d72';
+    Chart.defaults.borderColor = 'rgba(201,149,111,.22)';
 
-    <div class="section" id="s-market">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Market YoY Compare</div>
-        <h1 class="page-title">市場分析與競爭格局</h1>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">季度成長 YoY 比較</div><div class="card-sub">本年度 vs 上年度營收趨勢</div></div></div>
-          <div class="chart-wrap"><canvas id="chartQuarterly"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">競品競爭矩陣</div></div>
-          <table class="data-table">
-            <thead>
-              <tr><th>維度</th><th>我方系統</th><th>競品 A</th><th>競品 B</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="td-main">AI 模型預測</td><td><span class="badge badge-teal">✓ 強大</span></td><td>△ 基本中等</td><td>✗ 無此功能</td></tr>
-              <tr><td class="td-main">API 多端對接</td><td><span class="badge badge-teal">✓ 全面開放</span></td><td>△ 有限整合</td><td>✗ 封閉不支援</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="s-product">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Product Capabilities</div>
-        <h1 class="page-title">產品功能與模組完成度</h1>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">用戶規模與 MAU 成長曲線</div></div></div>
-          <div class="chart-wrap"><canvas id="chartUsers"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">系統功能開發完成度</div></div>
-          <div class="risk-bar">
-            <div class="risk-row">
-              <div class="risk-label">入出庫核心模組</div>
-              <div class="risk-track"><div class="risk-fill" data-w="100" style="background:var(--success)"></div></div>
-              <div class="risk-pct">100%</div>
-            </div>
-            <div class="risk-row">
-              <div class="risk-label">AI 補貨預測模組</div>
-              <div class="risk-track"><div class="risk-fill" data-w="85" style="background:var(--accent)"></div></div>
-              <div class="risk-pct">85%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="s-finance">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Financial Roadmap</div>
-        <h1 class="page-title">財務規劃與預算控管</h1>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">預算 waterfall 瀑布流</div></div></div>
-          <div class="chart-wrap"><canvas id="chartBudget"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">運營成本配置比例</div></div>
-          <div class="risk-bar">
-            <div class="risk-row">
-              <div class="risk-label">研發投入成本</div>
-              <div class="risk-track"><div class="risk-fill" data-w="35" style="background:var(--accent)"></div></div>
-              <div class="risk-pct">35%</div>
-            </div>
-            <div class="risk-row">
-              <div class="risk-label">雲端運維設施</div>
-              <div class="risk-track"><div class="risk-fill" data-w="28" style="background:var(--gold)"></div></div>
-              <div class="risk-pct">28%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="s-risk">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Risk Control Matrix</div>
-        <h1 class="page-title">六維度系統風險評估</h1>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">綜合維度風險指標雷達圖</div></div></div>
-          <div class="chart-wrap" style="height:280px"><canvas id="chartRisk"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">風險緩解與防範措施</div></div>
-          <table class="data-table">
-            <thead>
-              <tr><th>風險威脅項目</th><th>嚴重級別</th><th>應對防範戰略</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="td-main">大促期高併發爆倉卡死</td><td><span class="badge badge-danger">High</span></td><td>布建 Redis 緩衝佇列進行多級高防並發機制</td></tr>
-              <tr><td class="td-main">電商多通路敏感資安漏洞</td><td><span class="badge badge-danger">High</span></td><td>全站傳輸鏈路落實 AES-256 去識別化加密</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="s-roadmap">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Milestones</div>
-        <h1 class="page-title">18 個月產品迭代執行藍圖</h1>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">專案甘特里程進度條</div></div>
-        <div class="gantt">
-          <div class="gantt-row"><div class="gantt-label">核心底層架構</div><div class="gantt-track"><div class="gantt-fill gantt-fill-done" data-left="0" data-w="40"></div></div></div>
-          <div class="gantt-row"><div class="gantt-label">AI 模型調校優化</div><div class="gantt-track"><div class="gantt-fill gantt-fill-wip" data-left="40" data-w="30"></div></div></div>
-          <div class="gantt-row"><div class="gantt-label">全面系統整合發布</div><div class="gantt-track"><div class="gantt-fill gantt-fill-todo" data-left="70" data-w="30"></div></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="s-team">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Team &amp; Acknowledgements</div>
-        <h1 class="page-title">專題成員與答辯</h1>
-      </div>
-      <div class="grid-3">
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2.2rem; margin-bottom:12px;">👩‍💼</div>
-          <div class="card-title" style="font-size:1.05rem;">Elaine Chen</div>
-          <p class="card-sub">國立勤益科技大學<br/>行銷與流通管理專題 PM</p>
-        </div>
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2.2rem; margin-bottom:12px;">👩‍🎓</div>
-          <div class="card-title" style="font-size:1.05rem;">陳玉鳳 / 洪依辰</div>
-          <p class="card-sub">專題核心開發與簡報主講人</p>
-        </div>
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2.2rem; margin-bottom:12px;">👨‍🏫</div>
-          <div class="card-title" style="font-size:1.05rem;">褚文明 教授</div>
-          <p class="card-sub">指導教授 / 流通科技學術總顧問</p>
-        </div>
-      </div>
-
-      <div class="card card-accent" style="text-align:center; padding:45px; margin-top:28px;">
-        <h2 style="color:var(--text-1); font-family: 'Syne', sans-serif; font-size:1.8rem; margin-bottom:12px;">Q &amp; A 答辯與交流</h2>
-        <p style="color:var(--text-2); font-size:0.95rem; margin-bottom:0;">感謝各位評審委員蒞臨指導，歡迎提問與指教。</p>
-      </div>
-    </div>
-
-  </div></div><script>
-'use strict';
-
-// 1. 全域圖表外觀配置：完全適配 Dark Minimal Pro 奢華深色調
-const CHART_DEFAULTS = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: true, labels: { color: '#A8A8B8', font: { size: 10 } } },
-    tooltip: {
-      backgroundColor: '#18181C',
-      borderColor: 'rgba(255,255,255,0.08)',
-      borderWidth: 1,
-      titleColor: '#F2F2F5',
-      bodyColor: '#A8A8B8',
-      padding: 12,
-      cornerRadius: 10,
+    function buildNav() {
+      const nav = document.getElementById('navList');
+      nav.innerHTML = pages.map((p, i) => `<li><button class="nav-link ${i === 0 ? 'active' : ''}" data-page="${p[0]}" onclick="switchPage('${p[0]}')"><span class="nav-num">${String(i + 1).padStart(2, '0')}</span><span><span class="nav-title">${p[1]}</span><br><span class="nav-note">${p[2]}</span></span><span>›</span></button></li>`).join('');
     }
-  },
-  scales: {
-    x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6A6A7A', font: { size: 10 } } },
-    y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6A6A7A', font: { size: 10 } } }
-  }
-};
 
-const charts = {};
-
-// 2. 構建渲染 6 大核心圖表
-function buildCharts() {
-  // [1] 年度營收趨勢 (Line Chart)
-  const ctxRevenue = document.getElementById('chartRevenue');
-  if (ctxRevenue) {
-    charts.revenue = new Chart(ctxRevenue, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [
-          {
-            label: '實際營收',
-            data: [1.2, 1.5, 1.3, 1.8, 2.1, 2.4, 2.2, 2.7, 3.0, 2.8, 3.2, 3.6],
-            borderColor: '#7C6AF5',
-            backgroundColor: 'rgba(124,106,245,0.08)',
-            borderWidth: 2, pointRadius: 3, fill: true, tension: 0.45
-          },
-          {
-            label: '目標營收',
-            data: [1.0, 1.3, 1.5, 1.7, 2.0, 2.2, 2.5, 2.8, 3.0, 3.2, 3.5, 4.0],
-            borderColor: 'rgba(255,255,255,0.15)',
-            borderWidth: 1.5, borderDash: [4, 4], fill: false, tension: 0.45
-          }
-        ]
-      },
-      options: CHART_DEFAULTS
-    });
-  }
-
-  // [2] 市場佔有率 (Doughnut Chart)
-  const ctxMarket = document.getElementById('chartMarket');
-  if (ctxMarket) {
-    charts.market = new Chart(ctxMarket, {
-      type: 'doughnut',
-      data: {
-        labels: ['我方產品', '競品 A', '競品 B', '其他通路'],
-        datasets: [{
-          data: [38, 27, 21, 14],
-          backgroundColor: ['#7C6AF5', '#C9A84C', '#3ECFCF', '#2C2C33'],
-          borderWidth: 0
-        }]
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: CHART_DEFAULTS.plugins }
-    });
-  }
-
-  // [3] 季度成長比較 (Bar Chart)
-  const ctxQ = document.getElementById('chartQuarterly');
-  if (ctxQ) {
-    charts.quarterly = new Chart(ctxQ, {
-      type: 'bar',
-      data: {
-        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-        datasets: [
-          { label: '本年度', data: [4.0, 6.3, 7.9, 9.6], backgroundColor: 'rgba(124,106,245,0.75)', borderRadius: 6 },
-          { label: '上年度', data: [3.2, 4.8, 6.1, 7.2], backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: 6 }
-        ]
-      },
-      options: CHART_DEFAULTS
-    });
-  }
-
-  // [4] 用戶成長曲線 (Area Chart)
-  const ctxUsers = document.getElementById('chartUsers');
-  if (ctxUsers) {
-    charts.users = new Chart(ctxUsers, {
-      type: 'line',
-      data: {
-        labels: ['1月','2月','3月','4月','5月','6月'],
-        datasets: [{
-          label: '活躍用戶數', data: [2400, 3100, 3800, 4600, 5900, 7200],
-          borderColor: '#3ECFCF', backgroundColor: 'rgba(62,207,207,0.1)', borderWidth: 2, fill: true, tension: 0.45
-        }]
-      },
-      options: CHART_DEFAULTS
-    });
-  }
-
-  // [5] 風險雷達圖 (Radar Chart)
-  const ctxRisk = document.getElementById('chartRisk');
-  if (ctxRisk) {
-    charts.risk = new Chart(ctxRisk, {
-      type: 'radar',
-      data: {
-        labels: ['技術風險','市場風險','財務風險','人力資源','法規合規','競爭壓力'],
-        datasets: [{
-          label: '風險指數', data: [55, 72, 38, 45, 28, 80],
-          borderColor: '#C9A84C', backgroundColor: 'rgba(201,168,76,0.12)', borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false, plugins: CHART_DEFAULTS.plugins,
-        scales: { r: { grid: { color: 'rgba(255,255,255,0.06)' }, angleLines: { color: 'rgba(255,255,255,0.06)' }, pointLabels: { color: '#6A6A7A' } } }
-      }
-    });
-  }
-
-  // [6] 預算瀑布圖 (Waterfall Bar Chart)
-  const ctxBudget = document.getElementById('chartBudget');
-  if (ctxBudget) {
-    charts.budget = new Chart(ctxBudget, {
-      type: 'bar',
-      data: {
-        labels: ['預算', '研發成本', '行銷費用', '人力成本', '營運費用', '淨利潤'],
-        datasets: [{
-          label: '金額異動 (M)', data: [10, -2.5, -1.8, -2.2, -0.8, 2.7],
-          backgroundColor: [ 'rgba(124,106,245,0.75)', 'rgba(240,90,122,0.65)', 'rgba(240,90,122,0.65)', 'rgba(240,90,122,0.65)', 'rgba(240,90,122,0.65)', 'rgba(62,207,207,0.75)' ],
-          borderRadius: 5
-        }]
-      },
-      options: CHART_DEFAULTS
-    });
-  }
-}
-
-// 3. 側邊欄單頁路由與導覽
-function initNav() {
-  const navItems = document.querySelectorAll('.nav-item[data-section]');
-  const sections = document.querySelectorAll('.section');
-
-  function activateSection(id) {
-    navItems.forEach(n => n.classList.toggle('active', n.dataset.section === id));
-    sections.forEach(s => s.classList.toggle('active', s.id === id));
-    
-    const active = document.querySelector(`.nav-item[data-section="${id}"]`);
-    const bc = document.getElementById('breadcrumb-current');
-    if (bc && active) bc.textContent = active.querySelector('.nav-text')?.textContent || active.textContent;
-    
-    setTimeout(() => animateBars(), 120);
-    document.querySelector('.sidebar')?.classList.remove('open');
-    document.querySelector('.sidebar-overlay')?.classList.remove('active');
-    document.getElementById('mainArea')?.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  navItems.forEach(item => {
-    item.addEventListener('click', () => activateSection(item.dataset.section));
-  });
-
-  // 漢堡選單綁定
-  const ham = document.getElementById('hamburger');
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.querySelector('.sidebar-overlay');
-  if (ham && sidebar && overlay) {
-    ham.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); });
-    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
-  }
-}
-
-// 4. 進度條與甘特圖動畫控制
-function animateBars() {
-  document.querySelectorAll('.progress-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; });
-  document.querySelectorAll('.risk-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; });
-  document.querySelectorAll('.gantt-fill[data-left][data-w]').forEach(el => {
-    el.style.left = el.dataset.left + '%'; el.style.width = el.dataset.w + '%';
-  });
-}
-
-// 5. KPI 滾動跳數動畫效果
-function animateCounters() {
-  document.querySelectorAll('.counter[data-target]').forEach(el => {
-    const target = parseFloat(el.dataset.target);
-    const dec = parseInt(el.dataset.dec || 0);
-    const prefix = el.dataset.prefix || '';
-    const suffix = el.dataset.suffix || '';
-    const dur = 1500;
-    const start = performance.now();
-    const step = now => {
-      const p = Math.min((now - start) / dur, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      el.textContent = prefix + (target * ease).toFixed(dec) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  });
-}
-
-// 6. 打字機特效
-function initTyping() {
-  const el = document.getElementById('typing-text');
-  if (!el) return;
-  const texts = ['倉儲管理系統', '庫存最佳化', '院二流三甲', '流通科技管理'];
-  let i = 0, j = 0, deleting = false;
-  function type() {
-    const current = texts[i];
-    if (!deleting) {
-      el.textContent = current.slice(0, j + 1); j++;
-      if (j === current.length) { deleting = true; setTimeout(type, 1600); return; }
-    } else {
-      el.textContent = current.slice(0, j - 1); j--;
-      if (j === 0) { deleting = false; i = (i + 1) % texts.length; }
+    function switchPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('active', link.dataset.page === pageId));
+      const index = pages.findIndex(p => p[0] === pageId);
+      document.getElementById('currentPage').textContent = pages[index][1];
+      document.getElementById('progressText').textContent = `${index + 1} / ${pages.length}`;
+      document.getElementById('progressFill').style.width = `${((index + 1) / pages.length) * 100}%`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => { renderChartsForPage(pageId); typesetMath(); }, 120);
     }
-    setTimeout(type, deleting ? 60 : 100);
-  }
-  type();
-}
 
-// 核心初始化
-document.addEventListener('DOMContentLoaded', () => {
-  initNav();
-  initTyping();
-  buildCharts();
-  animateCounters();
-  setTimeout(animateBars, 300);
-});
-</script>
+    function gradient(ctx, area, colors) {
+      const g = ctx.createLinearGradient(0, area.bottom, 0, area.top);
+      colors.forEach(stop => g.addColorStop(stop[0], stop[1]));
+      return g;
+    }
+
+    function chartOptions(extra = {}) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 1450, easing: 'easeOutQuart', delay: ctx => ctx.dataIndex ? ctx.dataIndex * 90 : 0 },
+        plugins: { legend: { labels: { usePointStyle: true, padding: 18, font: { weight: '700' } } }, tooltip: { backgroundColor: 'rgba(61,51,45,.92)', padding: 14, cornerRadius: 12, titleColor: '#fff5ec', bodyColor: '#fffaf4' } },
+        scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: 'rgba(201,149,111,.16)' } } },
+        ...extra
+      };
+    }
+
+    function renderRevenueChart() {
+      if (chartInstances.revenueChart) return;
+      const canvas = document.getElementById('revenueChart'); if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      chartInstances.revenueChart = new Chart(ctx, { type: 'line', data: { labels: ['Q1','Q2','Q3','Q4','Q5','Q6'], datasets: [{ label: '實際營收', data: [1.2,1.7,2.25,2.9,3.25,3.8], borderColor: '#ff9f7d', pointBackgroundColor: '#ff9f7d', tension: .42, fill: true, backgroundColor: c => { const a = c.chart.chartArea; return a ? gradient(ctx, a, [[0,'rgba(255,159,125,.02)'],[1,'rgba(255,159,125,.30)']]) : 'rgba(255,159,125,.18)'; } }, { label: '目標營收', data: [1.4,1.9,2.4,3.1,3.6,4.1], borderColor: '#ffb7cf', pointBackgroundColor: '#ffb7cf', tension: .42, borderDash: [6,6], fill: false }] }, options: chartOptions() });
+    }
+
+    function renderMarketChart() {
+      if (chartInstances.marketChart) return;
+      const ctx = document.getElementById('marketChart')?.getContext('2d'); if (!ctx) return;
+      chartInstances.marketChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['零售連鎖','製造業','第三方物流','電商倉配'], datasets: [{ data: [34, 27, 22, 17], backgroundColor: ['#ff9f7d','#ffb7cf','#d7ad79','#f1dec0'], borderColor: '#fffaf4', borderWidth: 5, hoverOffset: 14 }] }, options: chartOptions({ cutout: '62%', rotation: -90, animation: { animateRotate: true, animateScale: true, duration: 1500, easing: 'easeOutQuart' }, scales: {} }) });
+    }
+
+    function renderQuarterlyChart() {
+      if (chartInstances.quarterlyChart) return;
+      const ctx = document.getElementById('quarterlyChart')?.getContext('2d'); if (!ctx) return;
+      chartInstances.quarterlyChart = new Chart(ctx, { type: 'bar', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{ label: '去年', data: [55,62,68,73], backgroundColor: 'rgba(241,222,192,.82)', borderRadius: 14 }, { label: '今年', data: [70,84,96,112], backgroundColor: 'rgba(255,159,125,.80)', borderRadius: 14 }] }, options: chartOptions({ animation: { duration: 1200, easing: 'easeOutBack', delay: ctx => ctx.datasetIndex * 180 + ctx.dataIndex * 90 } }) });
+    }
+
+    function renderUsersChart() {
+      if (chartInstances.usersChart) return;
+      const ctx = document.getElementById('usersChart')?.getContext('2d'); if (!ctx) return;
+      chartInstances.usersChart = new Chart(ctx, { type: 'line', data: { labels: ['收貨','上架','儲位','揀貨','出貨','盤點','報表'], datasets: [{ label: '功能成熟度', data: [48,56,66,72,81,88,94], borderColor: '#d7ad79', pointBackgroundColor: '#d7ad79', tension: .4, fill: true, backgroundColor: 'rgba(215,173,121,.18)' }, { label: '使用者採納率', data: [30,42,55,63,74,82,90], borderColor: '#ffb7cf', pointBackgroundColor: '#ffb7cf', tension: .4, fill: true, backgroundColor: 'rgba(255,183,207,.16)' }] }, options: chartOptions() });
+    }
+
+    function renderBudgetChart() {
+      if (chartInstances.budgetChart) return;
+      const ctx = document.getElementById('budgetChart')?.getContext('2d'); if (!ctx) return;
+      chartInstances.budgetChart = new Chart(ctx, { type: 'polarArea', data: { labels: ['系統開發','硬體設備','教育訓練','維運支援','資料整合'], datasets: [{ data: [38, 22, 14, 16, 10], backgroundColor: ['rgba(255,159,125,.78)','rgba(255,183,207,.72)','rgba(215,173,121,.70)','rgba(241,222,192,.82)','rgba(185,139,109,.62)'], borderColor: '#fffaf4', borderWidth: 4 }] }, options: chartOptions({ scales: { r: { grid: { color: 'rgba(201,149,111,.16)' }, ticks: { display: false } } }, animation: { animateRotate: true, animateScale: true, duration: 1450 } }) });
+    }
+
+    function renderRiskChart() {
+      if (chartInstances.riskChart) return;
+      const ctx = document.getElementById('riskChart')?.getContext('2d'); if (!ctx) return;
+      chartInstances.riskChart = new Chart(ctx, { type: 'radar', data: { labels: ['資料品質','導入成本','流程改造','接受度','系統穩定','供應商依賴'], datasets: [{ label: '導入前風險', data: [82,74,86,70,63,58], borderColor: '#ff9f7d', backgroundColor: 'rgba(255,159,125,.18)', pointBackgroundColor: '#ff9f7d' }, { label: '治理後風險', data: [38,44,41,35,28,32], borderColor: '#d7ad79', backgroundColor: 'rgba(215,173,121,.18)', pointBackgroundColor: '#d7ad79' }] }, options: chartOptions({ scales: { r: { beginAtZero: true, max: 100, grid: { color: 'rgba(201,149,111,.18)' }, angleLines: { color: 'rgba(201,149,111,.18)' }, pointLabels: { color: '#7f6453', font: { weight: '800' } } } } }) });
+    }
+
+    function renderChartsForPage(pageId) {
+      if (pageId === 'overview') { renderRevenueChart(); renderMarketChart(); }
+      if (pageId === 'market') renderQuarterlyChart();
+      if (pageId === 'product') renderUsersChart();
+      if (pageId === 'finance') renderBudgetChart();
+      if (pageId === 'risk') renderRiskChart();
+    }
+
+    function typesetMath() {
+      if (window.MathJax?.typesetPromise) MathJax.typesetPromise().catch(() => {});
+    }
+
+    function n(id, fallback = 0) { return Number(document.getElementById(id)?.value || fallback); }
+    function fmt(x) { return Number.isFinite(x) ? x.toLocaleString('zh-TW', { maximumFractionDigits: 2 }) : '-'; }
+
+    function calculateEOQ() {
+      const D = n('eoqD'), S = n('eoqS'), H = n('eoqH');
+      const value = H > 0 ? Math.sqrt((2 * D * S) / H) : NaN;
+      document.getElementById('eoqFormula').innerHTML = `$$EOQ = \\sqrt{\\frac{2 \\times ${fmt(D)} \\times ${fmt(S)}}{${fmt(H)}}} = ${fmt(value)}$$`;
+      const box = document.getElementById('eoqResult'); box.style.display = 'block'; box.textContent = `建議最適訂購批量：${fmt(value)} 件`;
+      typesetMath();
+    }
+
+    function calculateSS() {
+      const Z = n('ssZ'), sigma = n('ssSigma'), L = n('ssLead');
+      const sigmaL = sigma * Math.sqrt(Math.max(L, 0));
+      const value = Z * sigmaL;
+      document.getElementById('ssFormula').innerHTML = `$$SS = ${fmt(Z)} \\times (${fmt(sigma)} \\times \\sqrt{${fmt(L)}}) = ${fmt(value)}$$`;
+      const box = document.getElementById('ssResult'); box.style.display = 'block'; box.textContent = `建議安全庫存：${fmt(value)} 件`;
+      typesetMath();
+    }
+
+    function typewriterEffect() {
+      const words = ['庫存最佳化', '日系零售選物', '蜜桃櫻花焦糖', '流通科技管理'];
+      const el = document.getElementById('typewriter');
+      let wi = 0, ci = 0, del = false;
+      const tick = () => {
+        const word = words[wi];
+        el.textContent = del ? word.slice(0, ci--) : word.slice(0, ci++);
+        if (!del && ci > word.length + 8) del = true;
+        if (del && ci < 0) { del = false; wi = (wi + 1) % words.length; ci = 0; }
+        setTimeout(tick, del ? 52 : 88);
+      };
+      tick();
+    }
+
+    window.addEventListener('load', () => {
+      buildNav();
+      renderChartsForPage('overview');
+      calculateEOQ();
+      calculateSS();
+      typewriterEffect();
+      setTimeout(typesetMath, 350);
+    });
+  </script>
 </body>
 </html>

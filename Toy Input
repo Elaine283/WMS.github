@@ -1,0 +1,10 @@
+<div class="relative">
+  <input type="text" placeholder="請輸入儲位編號..." class="
+    w-full px-5 py-3.5 rounded-2xl border-3 border-toy-dark text-toy-dark font-medium placeholder-gray-400
+    [box-shadow:4px_4px_0px_#073B4C] focus:outline-none focus:bg-amber-50/50
+    transition-all duration-150
+    /* 當 Input 被 Focus 時，陰影稍微推開，做出專注感 */
+    focus:-translate-y-0.5 focus:[box-shadow:6px_6px_0px_#073B4C]
+  " />
+  <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xl select-none">🔍</span>
+</div>

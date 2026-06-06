@@ -1,80 +1,321 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WMS 智慧倉儲管理系統｜流通科技專題</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-  <style>
-    /* 基礎色系設定 */
-    :root { 
-      --bg: #fffaf4; --ink: #3d332d; --peach: #ff9f7d; --sakura: #ffb7cf; --caramel: #d7ad79;
-    }
-    body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg); color: var(--ink); margin: 0; }
-    
-    /* 登入卡片樣式 */
-    .login-container { max-width: 400px; margin: 50px auto; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    .input-field { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-    .btn-login { width: 100%; padding: 12px; background: var(--peach); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .social-btn { width: 48%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; }
-    
-    /* 列印專用樣式 */
-    @media print { .no-print { display: none; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>iWMS 2026 | 智慧互動倉儲管理系統與庫存最佳化</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+peach: { 50: '#FFF9F9', 100: '#FFEFEF', 200: '#FFD6D6', 700: '#C24141' },
+cherry: { 200: '#FBCFE8', 600: '#DB2777', 700: '#BE185D' },
+caramel: { 50: '#FFFBEB', 100: '#FEF3C7', 600: '#D97706', 700: '#B45309', 800: '#92400E' },
+luxuryGold: '#D4AF37',
+japanBg: '#FAF7F2'
+}
+}
+}
+}
+</script>
+<style>
+body { background-color: #FAF7F2; color: #78350F; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; -webkit-font-smoothing: antialiased; }
+.luxury-glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(180, 83, 9, 0.15); }
+.text-gradient { background: linear-gradient(135deg, #92400E, #DB2777); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.card-refine { background-color: #FFFFFF; border: 1px solid rgba(180, 83, 9, 0.1); box-shadow: 0 20px 40px -15px rgba(146, 64, 14, 0.04); }
+input[type="number"], input[type="email"], input[type="password"] { background: #FFFFFF; border: 1px solid #E2E8F0; color: #92400E; border-radius: 6px; padding: 10px 14px; transition: all 0.2s; font-weight: 500; width: 100%; box-sizing: border-box; }
+input:focus { outline: none; border-color: #B45309; box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.08); }
+.video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; }
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+@media print {
+.no-print { display: none !important; }
+body { background: #FFFFFF !important; color: #000000 !important; }
+.card-refine { box-shadow: none !important; border: 1px solid #E2E8F0 !important; page-break-inside: avoid; }
+nav, footer { display: none !important; }
+}
+</style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-  <div id="login-page" class="login-container">
-    <h2 style="text-align: center;">系統登入</h2>
-    <input type="email" class="input-field" placeholder="企業電子郵件">
-    <input type="password" class="input-field" placeholder="安全存取密碼">
-    <label><input type="checkbox"> 記住我</label>
-    <button class="btn-login" onclick="showApp()">安全登入</button>
-    <div style="text-align: center; margin-top: 15px;">
-      <button class="social-btn">Google</button>
-      <button class="social-btn">Microsoft</button>
-    </div>
-  </div>
+<div class="w-full bg-caramel-800 text-white px-4 py-2.5 flex justify-between items-center text-xs tracking-wider no-print z-50 relative">
+<span>2026 iWMS 智慧流通管理專題系統入口</span>
+<button onclick="window.print()" class="bg-transparent hover:bg-white/10 text-white font-bold border border-white/40 px-3 py-1 rounded transition flex items-center gap-1" aria-label="列印此網頁報告">
+🖨️ 列印此頁報告
+</button>
+</div>
 
-  <div id="app-content" style="display: none;">
-    <header style="padding: 20px; text-align: right;" class="no-print">
-      <button onclick="window.print()">🖨️ 列印報告</button>
-    </header>
+<nav class="sticky top-0 w-full z-40 px-4 py-4 luxury-glass flex justify-between items-center border-b border-amber-200/30 no-print" role="navigation" aria-label="導航選單">
+<div class="text-lg font-black tracking-tight text-gradient">iWMS ‧ 櫻花選物</div>
+<div class="flex space-x-4 text-[11px] font-bold tracking-widest text-caramel-700">
+<a href="#login-portal" class="hover:text-cherry-600 transition">系統登入</a>
+<a href="#strategy" class="hover:text-cherry-600 transition">存貨戰略</a>
+<a href="#math-engine" class="hover:text-cherry-600 transition">最佳化運算</a>
+</div>
+</nav>
 
-    <main style="padding: 20px;">
-      <h1>iWMS 智慧倉儲系統概覽</h1>
-      
-      <section id="calculator">
-        <h2>EOQ 數據驅動決策</h2>
-        <div id="eoq-math">$$EOQ = \sqrt{\frac{2DS}{H}}$$</div>
-        <input type="number" id="D" placeholder="年度需求 D">
-        <input type="number" id="S" placeholder="訂購成本 S">
-        <input type="number" id="H" placeholder="持有成本 H">
-        <button onclick="calc()">計算結果</button>
-        <div id="result"></div>
-      </section>
+<main class="w-full max-w-3xl mx-auto px-4 py-8 space-y-16">
 
-      <section>
-        <h2>相關技術說明</h2>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/GI5jxp4rtEs" allowfullscreen></iframe>
-      </section>
-    </main>
-  </div>
+<section id="login-portal" class="w-full">
+<div id="react-login-root"></div>
+</section>
 
-  <script>
-    function showApp() {
-      document.getElementById('login-page').style.display = 'none';
-      document.getElementById('app-content').style.display = 'block';
-    }
+<section id="strategy" class="w-full card-refine p-6 md:p-8 rounded-2xl">
+<span class="text-xs font-bold uppercase tracking-widest text-cherry-600">Inventory Investment Analysis</span>
+<h2 class="text-2xl font-black text-caramel-800 mt-2 mb-4">存貨管理的重要性與 ROI 槓桿</h2>
+<p class="text-sm text-caramel-700 leading-relaxed mb-6">
+在精緻零售選物體系中，<strong>存貨投資大約相當於企業營運資金的 90%</strong>，在總資產中佔有極大比例。因此，透過科學模型有效減少多餘存貨，可以非常明顯地縮小資產分母，增加企業的<strong>投資報酬率 (ROI)</strong>。
+</p>
+<div class="p-4 bg-peach-50 rounded-xl border border-peach-100 text-center mb-6">
+<span class="block text-xs text-caramel-600 font-bold mb-1">投資報酬率計算公式</span>
+<div class="text-base font-serif italic text-caramel-800">
+$$ROI = \frac{\text{稅後淨利}}{\text{總資產} \downarrow}$$
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="text-sm font-bold text-caramel-800 flex items-center gap-1">🌸 存貨管理的核心 重點與功能</h3>
+<p class="text-xs text-caramel-700 leading-relaxed">
+完美的存貨管理著重於維持極高的<strong>顧客服務水準</strong>（在正確的時間與地點擁有正確且足夠數量的商品），並動態監控<strong>存貨周轉率</strong>。iWMS 協助企業整合預測、追蹤、前置時間、訂購成本、持有成本、缺貨成本與產品分類，以舒緩生產需求，並作為連續作業程序的安全緩衝。
+</p>
+</div>
+</section>
 
-    function calc() {
-      const D = document.getElementById('D').value;
-      const S = document.getElementById('S').value;
-      const H = document.getElementById('H').value;
-      const eoq = Math.sqrt((2 * D * S) / H);
-      document.getElementById('result').innerHTML = `計算結果：最適訂購量為 ${eoq.toFixed(2)} 件`;
-    }
-  </script>
+<section id="ecosystem" class="w-full space-y-4">
+<h2 class="text-xl font-bold text-caramel-800 text-center">全鏈路涵蓋之六大存貨型態</h2>
+<div class="grid grid-cols-1 gap-3">
+<div class="card-refine p-4 rounded-xl flex items-center space-x-4"><span class="text-xl">🧱</span><div><h4 class="text-xs font-bold text-caramel-800">原物料與採購元件</h4><p class="text-[11px] text-caramel-600">生產流程最前端的基礎美學原料</p></div></div>
+<div class="card-refine p-4 rounded-xl flex items-center space-x-4"><span class="text-xl">⚙️</span><div><h4 class="text-xs font-bold text-caramel-800">半成品或在製品</h4><p class="text-[11px] text-caramel-600">正在程序中流轉、轉化中的物件</p></div></div>
+<div class="card-refine p-4 rounded-xl flex items-center space-x-4"><span class="text-xl">📦</span><div><h4 class="text-xs font-bold text-caramel-800">完成品或商品</h4><p class="text-[11px] text-caramel-600">已包裝完畢、隨時可供顧客選購的成品</p></div></div>
+<div class="card-refine p-4 rounded-xl flex items-center space-x-4"><span class="text-xl">🛠️</span><div><h4 class="text-xs font-bold text-caramel-800">工具或供給原料</h4><p class="text-[11px] text-caramel-600">維持場內場外不間斷營運之輔助資材</p></div></div>
+<div class="card-refine p-4 rounded-xl flex items-center space-x-4"><span class="text-xl">🔄</span><div><h4 class="text-xs font-bold text-caramel-800">回收或維修的物品</h4><p class="text-[11px] text-caramel-600">逆向物流與永續循環管理的核心存貨</p></div></div>
+<div class="card-refine p-4 rounded-xl flex items-center space-x-4"><span class="text-xl">🚚</span><div><h4 class="text-xs font-bold text-caramel-800">在運送途中的商品或原料</h4><p class="text-[11px] text-caramel-600">跨供應鏈節點流動中的動態在途資產</p></div></div>
+</div>
+<p class="text-center text-[11px] text-caramel-600 italic mt-2">※ 佈署存貨必須全面考慮企業能容納之儲存空間能力與安全規範。</p>
+</section>
+
+<section class="w-full space-y-4 no-print">
+<h2 class="text-lg font-bold text-caramel-800">iWMS 場內自動化設備實務演示</h2>
+<div class="video-container card-refine">
+<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="iWMS 智慧倉儲操作演示影片" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+</section>
+
+<section id="math-engine" class="w-full card-refine p-6 md:p-8 rounded-2xl space-y-6">
+<h2 class="text-xl font-black text-caramel-800 border-b border-amber-200/40 pb-3">庫存最佳化數學模型計算</h2>
+
+<div class="space-y-4 text-xs text-caramel-700 leading-relaxed">
+<div class="bg-japanBg p-4 rounded-xl">
+<span class="font-bold block mb-1 text-caramel-800">基本經濟訂購量模型 (EOQ)</span>
+<p class="mb-2">年度持有成本 = \(\frac{Q}{2}H\) | 年度訂購成本 = \(\frac{D}{Q}S\) | 購買成本 = \(PD\)</p>
+<p class="font-bold text-center py-2 text-sm text-caramel-800">$$總成本(TC) = \frac{Q}{2}H + \frac{D}{Q}S + PD$$</p>
+<p class="font-bold text-center py-2 text-sm text-cherry-600">$$最佳經濟訂購量(Q^*) = \sqrt{\frac{2DS}{H}}$$</p>
+</div>
+<div class="bg-japanBg p-4 rounded-xl">
+<span class="font-bold block text-caramel-800">進階動態決策模型</span>
+<p>系統內建包含<strong>經濟生產量模型 (EPQ)</strong> 與<strong>數量折扣模型</strong>，可依據供應商提供的價格階梯自動尋找全局總成本最低點。</p>
+</div>
+</div>
+
+<div class="grid grid-cols-1 gap-6 py-4">
+<div class="w-full h-48"><canvas id="trendChart"></canvas></div>
+<div class="w-full h-48"><canvas id="pieChart"></canvas></div>
+</div>
+
+<div class="space-y-4 bg-peach-50/50 p-4 rounded-xl border border-peach-200">
+<h3 class="text-xs font-bold text-caramel-800">⚙️ 最佳化模型實時輸入</h3>
+<div class="grid grid-cols-1 gap-3">
+<div><label class="block text-[10px] font-bold text-caramel-600 mb-1">年度需求量 (D)</label><input type="number" id="inputD" value="5000" oninput="calculateEngine()"></div>
+<div><label class="block text-[10px] font-bold text-caramel-600 mb-1">單次訂購成本 (S)</label><input type="number" id="inputS" value="65" oninput="calculateEngine()"></div>
+<div><label class="block text-[10px] font-bold text-caramel-600 mb-1">單位年度持有成本 (H)</label><input type="number" id="inputH" value="2.5" oninput="calculateEngine()"></div>
+<div><label class="block text-[10px] font-bold text-caramel-600 mb-1">指定安全庫存量 (SS)</label><input type="number" id="inputSS" value="120" oninput="calculateEngine()"></div>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-2 text-center">
+<div class="bg-white p-3 rounded-lg border border-amber-200"><span class="block text-[10px] text-caramel-600">經濟訂購量 (Q*)</span><span id="outputQ" class="text-base font-black text-cherry-600">--</span></div>
+<div class="text-center bg-white p-3 rounded-lg border border-amber-200"><span class="block text-[10px] text-caramel-600">安全再訂購點 (ROP)</span><span id="outputROP" class="text-base font-black text-caramel-700">--</span></div>
+</div>
+</div>
+</section>
+
+<section id="team" class="w-full space-y-4">
+<h2 class="text-xl font-bold text-caramel-800 text-center">專題團隊與研究編制</h2>
+<div class="card-refine p-6 rounded-2xl bg-white space-y-4 text-xs text-caramel-700 leading-relaxed">
+<div class="grid grid-cols-1 gap-2 pb-3 border-b border-slate-100">
+<div><strong>指導教授：</strong> 王教授 / 流通管理學術顧問</div>
+<div><strong>專題組員：</strong> 陳玉鳳 (5B433019) ‧ 洪依辰 (5B433004)</div>
+</div>
+<p>
+本專題深度鏈結經典作業管理理論與 2026 年最新智慧倉儲規範，探討當 AI 進化至工業化自動階層、多雲平台架構與第三方 API 串接成為企業標配時，流通體系所面臨的效率飛躍與開源特洛伊、供應鏈勒索等資安防禦缺口治理。
+</p>
+</div>
+</section>
+
+</main>
+
+<footer class="w-full py-8 bg-white border-t border-amber-200/30 text-center text-caramel-600 text-[10px] tracking-widest uppercase no-print">
+<p>© 2026 iWMS 櫻花零售物流選物專題 ‧ 全權所有</p>
+</footer>
+
+<script type="text/babel">
+function LuxuryLoginForm() {
+const [email, setEmail] = React.useState('');
+const [password, setPassword] = React.useState('');
+const [rememberMe, setRememberMe] = React.useState(false);
+
+const handleSubmit = (e) => {
+e.preventDefault();
+alert(`登入驗證中：${email}`);
+};
+
+return (
+<div class="w-full card-refine p-6 md:p-8 rounded-2xl bg-white max-w-md mx-auto relative overflow-hidden">
+{/* 裝飾線條，展現 Refined/Luxury 質感 */}
+<div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-caramel-700 via-cherry-600 to-caramel-600"></div>
+
+<div class="text-center mb-6">
+<h2 class="text-xl font-serif tracking-wide text-caramel-800 font-bold">iWMS 安全管理入口</h2>
+<p class="text-[11px] text-caramel-600 mt-1 uppercase tracking-widest">Secured Enterprise Portal</p>
+</div>
+
+<form onSubmit={handleSubmit} class="space-y-4">
+<div>
+<label class="block text-[11px] font-bold text-caramel-700 mb-1.5 uppercase tracking-wider">電子郵件 / Email</label>
+<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@enterprise.com" required />
+</div>
+
+<div>
+<label class="block text-[11px] font-bold text-caramel-700 mb-1.5 uppercase tracking-wider">密碼 / Password</label>
+<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+</div>
+
+<div class="flex items-center justify-between text-xs pt-1">
+<label class="flex items-center space-x-2 cursor-pointer select-none">
+<input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} class="rounded border-amber-300 text-caramel-700 focus:ring-caramel-600 w-3.5 h-3.5" />
+<span class="text-caramel-700 font-medium text-[11px]">記住我的認證狀態</span>
+</label>
+<a href="#" class="text-[11px] text-cherry-600 hover:underline font-medium">忘記密碼？</a>
+</div>
+
+<button type="submit" class="w-full bg-caramel-800 hover:bg-caramel-700 text-white font-bold text-xs py-3 rounded transition tracking-widest uppercase shadow-sm mt-2">
+驗證安全憑證並登入
+</button>
+</form>
+
+<div class="relative flex py-3 items-center my-2 text-[10px] text-slate-400 uppercase tracking-wider">
+<div class="flex-grow border-t border-slate-200"></div>
+<span class="flex-shrink mx-3">或使用第三方單一登入</span>
+<div class="flex-grow border-t border-slate-200"></div>
+</div>
+
+<div class="grid grid-cols-2 gap-3">
+<button onClick={() => alert('已導向 Google OAuth 入口')} class="flex items-center justify-center py-2 px-3 border border-slate-200 rounded text-[11px] font-bold hover:bg-japanBg transition text-slate-700">
+Google 帳戶
+</button>
+<button onClick={() => alert('已導向 Enterprise Microsoft Entry')} class="flex items-center justify-center py-2 px-3 border border-slate-200 rounded text-[11px] font-bold hover:bg-japanBg transition text-slate-700">
+Microsoft 帳戶
+</button>
+</div>
+</div>
+);
+}
+
+const root = ReactDOM.createRoot(document.getElementById('react-login-root'));
+root.render(<LuxuryLoginForm />);
+</script>
+
+<script>
+let trendChart, pieChart;
+const ctxTrend = document.getElementById('trendChart').getContext('2d');
+const ctxPie = document.getElementById('pieChart').getContext('2d');
+
+function calculateEngine() {
+const D = parseFloat(document.getElementById('inputD').value) || 0;
+const S = parseFloat(document.getElementById('inputS').value) || 0;
+const H = parseFloat(document.getElementById('inputH').value) || 1;
+const SS = parseFloat(document.getElementById('inputSS').value) || 0;
+
+// 計算最佳 EOQ
+const Q = Math.sqrt((2 * D * S) / H);
+const optimalQ = Math.round(Q) || 1;
+
+// 計算再訂購點 ROP (假設固定前置時間 8 天，日需求 = D / 365)
+const ROP = Math.round((D / 365) * 8) + SS;
+
+document.getElementById('outputQ').innerText = optimalQ;
+document.getElementById('outputROP').innerText = ROP;
+
+// 1. 生成動態鋸齒趨勢圖數據
+const trendLabels = [];
+const trendData = [];
+let currentStock = optimalQ + SS;
+
+for (let i = 0; i <= 20; i++) {
+trendLabels.push('T+' + i);
+trendData.push(currentStock);
+currentStock -= (optimalQ / 5);
+if (currentStock < SS) {
+currentStock = optimalQ + SS;
+}
+}
+
+if (trendChart) trendChart.destroy();
+trendChart = new Chart(ctxTrend, {
+type: 'line',
+data: {
+labels: trendLabels,
+datasets: [{
+label: '即時庫存量',
+data: trendData,
+borderColor: '#DB2777',
+backgroundColor: 'rgba(219, 39, 119, 0.03)',
+borderWidth: 1.5,
+pointRadius: 1,
+fill: true,
+tension: 0
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { title: { display: true, text: '庫存水平週期性波動趨勢 (安全庫存鋸齒波)', color: '#92400E', font: { size: 10, weight: 'bold' } }, legend: { display: false } },
+scales: { y: { min: 0, ticks: { font: { size: 8 } } }, x: { ticks: { display: false } } }
+}
+});
+
+// 2. 生成成本結構環狀比例圖
+const holdingCostTotal = (optimalQ / 2) * H;
+const orderingCostTotal = (D / optimalQ) * S;
+
+if (pieChart) pieChart.destroy();
+pieChart = new Chart(ctxPie, {
+type: 'doughnut',
+data: {
+labels: ['持有總成本', '訂購總成本'],
+datasets: [{
+data: [holdingCostTotal, orderingCostTotal],
+backgroundColor: ['#FFD6D6', '#FEF3C7'],
+borderColor: ['#DB2777', '#D97706'],
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { title: { display: true, text: '最佳化持有與訂購成本平衡比例', color: '#92400E', font: { size: 10, weight: 'bold' } }, legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9 }, color: '#92400E' } } }
+}
+});
+}
+
+// 初始加載計算
+setTimeout(() => {
+calculateEngine();
+}, 600);
+</script>
+
 </body>
 </html>

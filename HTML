@@ -7,64 +7,73 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <style>
+    /* 基礎色系設定 */
     :root { 
       --bg: #fffaf4; --ink: #3d332d; --peach: #ff9f7d; --sakura: #ffb7cf; --caramel: #d7ad79;
     }
-    body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg); color: var(--ink); margin: 0; padding: 20px; }
+    body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg); color: var(--ink); margin: 0; }
     
-    .container { max-width: 900px; margin: 0 auto; background: rgba(255, 255, 255, 0.8); padding: 40px; border-radius: 20px; }
+    /* 登入卡片樣式 */
+    .login-container { max-width: 400px; margin: 50px auto; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .input-field { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+    .btn-login { width: 100%; padding: 12px; background: var(--peach); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .social-btn { width: 48%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; }
     
-    .btn-action { padding: 12px 24px; background: var(--peach); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    .btn-action:hover { background: var(--caramel); }
-    
-    .input-group { margin: 20px 0; display: flex; gap: 10px; }
-    .input-field { padding: 10px; border: 1px solid #ddd; border-radius: 8px; flex: 1; }
-
+    /* 列印專用樣式 */
     @media print { .no-print { display: none; } }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header style="display: flex; justify-content: space-between; align-items: center;" class="no-print">
-      <h1>iWMS 智慧倉儲系統專題</h1>
-      <button class="btn-action" onclick="window.print()">🖨️ 列印報告</button>
+  <div id="login-page" class="login-container">
+    <h2 style="text-align: center;">系統登入</h2>
+    <input type="email" class="input-field" placeholder="企業電子郵件">
+    <input type="password" class="input-field" placeholder="安全存取密碼">
+    <label><input type="checkbox"> 記住我</label>
+    <button class="btn-login" onclick="showApp()">安全登入</button>
+    <div style="text-align: center; margin-top: 15px;">
+      <button class="social-btn">Google</button>
+      <button class="social-btn">Microsoft</button>
+    </div>
+  </div>
+
+  <div id="app-content" style="display: none;">
+    <header style="padding: 20px; text-align: right;" class="no-print">
+      <button onclick="window.print()">🖨️ 列印報告</button>
     </header>
 
-    <main>
-      <section id="content">
-        <h2>庫存最佳化核心模型</h2>
-        <p>透過數據驅動的決策模型，優化訂購與庫存持有成本。</p>
-        
+    <main style="padding: 20px;">
+      <h1>iWMS 智慧倉儲系統概覽</h1>
+      
+      <section id="calculator">
+        <h2>EOQ 數據驅動決策</h2>
         <div id="eoq-math">$$EOQ = \sqrt{\frac{2DS}{H}}$$</div>
-        
-        <div class="input-group">
-          <input type="number" id="D" class="input-field" placeholder="年度需求量 D">
-          <input type="number" id="S" class="input-field" placeholder="訂購成本 S">
-          <input type="number" id="H" class="input-field" placeholder="持有成本 H">
-          <button class="btn-action" onclick="calc()">計算最適量</button>
-        </div>
-        <div id="result" style="font-weight: bold; margin-top: 10px;"></div>
+        <input type="number" id="D" placeholder="年度需求 D">
+        <input type="number" id="S" placeholder="訂購成本 S">
+        <input type="number" id="H" placeholder="持有成本 H">
+        <button onclick="calc()">計算結果</button>
+        <div id="result"></div>
       </section>
 
-      <section style="margin-top: 40px;">
-        <h2>技術趨勢影片</h2>
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-          <iframe style="position: absolute; top:0; left:0; width:100%; height:100%;" src="https://www.youtube.com/embed/GI5jxp4rtEs" allowfullscreen></iframe>
-        </div>
+      <section>
+        <h2>相關技術說明</h2>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/GI5jxp4rtEs" allowfullscreen></iframe>
       </section>
     </main>
   </div>
 
   <script>
+    function showApp() {
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('app-content').style.display = 'block';
+    }
+
     function calc() {
       const D = document.getElementById('D').value;
       const S = document.getElementById('S').value;
       const H = document.getElementById('H').value;
-      if (D && S && H) {
-        const eoq = Math.sqrt((2 * D * S) / H);
-        document.getElementById('result').innerHTML = `計算結果：最適訂購批量 (EOQ) 為 ${eoq.toFixed(2)} 件`;
-      }
+      const eoq = Math.sqrt((2 * D * S) / H);
+      document.getElementById('result').innerHTML = `計算結果：最適訂購量為 ${eoq.toFixed(2)} 件`;
     }
   </script>
 </body>
